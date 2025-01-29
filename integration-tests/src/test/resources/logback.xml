@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{yyyy-MM-dd_HH:mm:ss} %-5level [%thread->%file:%line] - %msg%n
+            </Pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>run-tests.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{yyyy-MM-dd_HH:mm:ss} %-5level [%thread->%file:%line] - %msg%n
+            </Pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE-THREAD" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator class="com.azul.avd.kbs.app.integration.testconfig.ThreadNameBasedDiscriminator"/>
+        <sift>
+            <!-- logFileName is setting by a test with inheritable thread local variable in ThreadNameBasedDiscriminator -->
+            <appender name="FILE-${logFileName}"
+                      class="ch.qos.logback.core.FileAppender">
+                <file>build/logback-reports/${logFileName}.log</file>
+                <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                    <Pattern>
+                        %d{yyyy-MM-dd_HH:mm:ss} %-5level [%file:%line] - %msg%n
+                    </Pattern>
+                </encoder>
+            </appender>
+        </sift>
+    </appender>
+    <logger name="com.azul" level="ALL" additivity="false">
+        <appender-ref ref="FILE" />
+        <appender-ref ref="FILE-THREAD" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+</configuration>
